@@ -88,3 +88,19 @@ ROBOTSTXT_OBEY = True
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+RANDOM_UA_TYPE = 'random'##random    chrome
+
+DOWNLOADER_MIDDLEWARES = {
+
+'spiderzero.Middlewares.user_agent_middlewares.RandomUserAgentMiddlware': 543, 
+
+'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware':None,
+
+}
+
+ROBOTSTXT_OBEY = False
+
+COOKIES_ENABLED = False
+
+DOWNLOAD_DELAY = 3
