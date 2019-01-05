@@ -1,25 +1,33 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import random
+from ..items import SpiderzeroItem
+import time
 
 
 class FinSpider(scrapy.Spider):
     name = "housespider"
     allowed_domains=["nj.lianjia.com"]
+    start_urls = [
+        "https://nj.lianjia.com/ershoufang"
+    ]
 
 
     def start_requests(self):
-        urls = [
-            'https://nj.lianjia.com/ershoufang/sanpailou/',
-            'https://nj.lianjia.com/ershoufang/hunanlu/',
-        ]
-        for url in urls:
-            print(scrapy.Request)
+        index = 1
+        for index in range(5):
+            url = self.start_urls[0] + '/pg' + str(index)
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        page = response.url.split("/")[-2]
-        filename = 'house%s.html' % page
-        with open(filename, 'wb') as f:
-            f.write(response.body)
-        print('Saved file %s' % filename)
+        time.sleep(2)
+        item = SpiderzeroItem() 
+        houses = response.xpath('//div[@class="info clear"]')
+        for house in houses:
+            item['community'] = house.xpath('./div[2]/div/a/text()').extract()[0].strip()
+            item['houseInfo'] = house.xpath('./div[2]/div/text()').extract()[0].strip()
+            item['positionInfo'] = house.xpath('./div[3]/div/a/text()').extract()[0].strip()
+            item['followInfo'] = house.xpath('./div[4]/text()').extract()[0].strip()
+            item['issubway'] = house.xpath('./div[5]/span[1]/text()').extract()[0].strip()
+            item['totalPrice'] = house.xpath('./div[6]/div[1]/span/text()').extract()[0].strip()
+            item['unitPrice'] = house.xpath('./div[6]/div[2]/span/text()').extract()[0].strip()
+            print(item)
