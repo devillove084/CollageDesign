@@ -1,16 +1,17 @@
-# CollageDesign
-AI Spider DataAnalysis
+# Introduction for My Project
 
-#Spider Of Whole City........
-```
-I decide to write an origin spider for this project.
-```
-# Folder Struct 
+----
 
-├── dataCtr
-├── dataStruct
-├── LICENSE
-├── README.md
-├── showCtr
-├── spiderCtr
-└── Spider.py
+This project provide a multi spider for one city house data. So, i produce code for few house websites which public data. I estimate 10W+ data can get from those websites. I decide to collect this happy time to honor myself.
+
+---
+
+# Feature
+
+----
+
+- Python3.6
+- The Scrapy Framework
+- SSDB
+- MySQL
+- Data Analysis soon......(CUDA Program for Some regressations)
