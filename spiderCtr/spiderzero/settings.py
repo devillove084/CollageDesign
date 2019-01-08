@@ -95,7 +95,7 @@ DOWNLOADER_MIDDLEWARES = {
 
 'spiderzero.Middlewares.user_agent_middlewares.RandomUserAgentMiddlware': 543, 
 
-'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware':None,
+'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware':None
 
 }
 
@@ -111,7 +111,7 @@ COOKIES_ENABLED = False
 
 RETRY_ENABLED = False
 
-DOWNLOAD_TIMEOUT = 15
+DOWNLOAD_TIMEOUT = 5
 
 SCHEDULER_ORDER = 'BFO'
 
@@ -121,5 +121,11 @@ CONCURRENT_ITEMS = 200
 
 CONCURRENT_REQUESTS_PER_DOMAIN = 64
 
+REACTOR_THREADPOOL_MAXSIZE = 60
+
+
+ITEM_PIPELINES = {
+    'spiderzero.pipelines.WriteToCsv':300,
+}
 
 

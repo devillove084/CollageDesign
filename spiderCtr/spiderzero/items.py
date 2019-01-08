@@ -11,6 +11,11 @@ import scrapy
 class SpiderzeroItem(scrapy.Item):
     houseInfo = scrapy.Field() # 用于存储房子标题
     community = scrapy.Field()
+    rooms = scrapy.Field()
+    areas = scrapy.Field()
+    design = scrapy.Field()
+    dirction = scrapy.Field()
+    iselevator = scrapy.Field()
     positionInfo = scrapy.Field() # 用于存储地理位置信息
     followInfo = scrapy.Field() # 用户存储房子的厅室信息
     issubway = scrapy.Field() # 用于存储房子的平米信息
