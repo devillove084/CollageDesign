@@ -19,7 +19,7 @@ NEWSPIDER_MODULE = 'spiderzero.spiders'
 #USER_AGENT = 'spiderzero (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -97,23 +97,20 @@ DOWNLOADER_MIDDLEWARES = {
 
 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware':None
 
+#'spiderzero.Middlewares.ip_pool.Ip_Pool':125,
+
+#'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware':543
 }
 
-ROBOTSTXT_OBEY = False
-
-COOKIES_ENABLED = False
+COOKIES_ENABLED = True
 
 DOWNLOAD_DELAY = 3
 
 CONCURRENT_REQUESTS = 100
 
-COOKIES_ENABLED = False
-
 RETRY_ENABLED = False
 
-DOWNLOAD_TIMEOUT = 5
-
-SCHEDULER_ORDER = 'BFO'
+DOWNLOAD_TIMEOUT = 15
 
 CONCURRENT_REQUESTS_PER_SPIDER = 50
 
@@ -124,8 +121,8 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 64
 REACTOR_THREADPOOL_MAXSIZE = 60
 
 
-ITEM_PIPELINES = {
-    'spiderzero.pipelines.WriteToCsv':300,
-}
+#ITEM_PIPELINES = {
+#    'spiderzero.pipelines.WriteToCsv':300,
+#}
 
 

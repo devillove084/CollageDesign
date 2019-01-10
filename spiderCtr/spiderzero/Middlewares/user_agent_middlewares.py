@@ -6,7 +6,11 @@ class RandomUserAgentMiddlware(object):
     def __init__(self,crawler):
         super(RandomUserAgentMiddlware,self).__init__()
         self.ua = UserAgent()
+
         self.ua_type = crawler.settings.get('RANDOM_UA_TYPE','random')#从setting文件中读取RANDOM_UA_TYPE值
+
+    def getua(self):
+        return getattr(self.ua)
 
     @classmethod
     def from_crawler(cls,crawler):
