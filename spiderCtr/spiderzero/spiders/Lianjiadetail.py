@@ -13,7 +13,8 @@ class LianjiaDetialSpider(scrapy.Spider):
     name = "lianjiaSspider"
     allowed_domains=["lianjia.com"]
     start_urls = [
-        "https://nj.lianjia.com/ershoufang"
+        "https://nj.lianjia.com/ershoufang",
+        "https://nj.lianjia.com/chengjiao/"
     ]
     def start_requests(self):
         index = 1
