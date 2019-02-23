@@ -13,13 +13,12 @@ class LianjiaDetialSpider(scrapy.Spider):
     name = "lianjiaSspider"
     allowed_domains=["lianjia.com"]
     start_urls = [
-        "https://nj.lianjia.com/ershoufang",
-        "https://nj.lianjia.com/chengjiao/"
+        "https://nanjing.anjuke.com/sale"
     ]
     def start_requests(self):
         index = 1
         for index in range(2):
-            url = self.start_urls[0] + '/pg' + str(index)
+            url = self.start_urls[0] + '/p' + str(index)
             yield scrapy.Request(url=url, callback=self.parse,errback=self.errback_httpbin,
                                     dont_filter=True)
 
