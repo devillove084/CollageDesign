@@ -63,8 +63,7 @@ class AnjukeItem(scrapy.Item):
     iselevator = scrapy.Field()
     address = scrapy.Field() # 用于存储地理位置信息
     build_year = scrapy.Field() # 用户存储房子的厅室信息
-    issubway = scrapy.Field() # 用于存储房子的平米信息
-    isschool = scrapy.Field()
+    optional = scrapy.Field() # 用于存储房子的平米信息
     totalPrice = scrapy.Field() # 用于存储房子的月租信息
     unitPrice = scrapy.Field()
     pass
