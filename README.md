@@ -10,10 +10,17 @@ This project provide a multi spider for one city house data. So, i produce code 
 
 ----
 
-- Python3.6
+- Python3.7.2
 - The Scrapy Framework
 - SSDB
 - MySQL
 - Data Analysis soon......(CUDA Program for Some regressations)
 
-# Soon
+# Crawled Website
+
+---
+- Anjuke
+- Lianjia
+- FangTianxia
+- ...
+---
