@@ -18,11 +18,11 @@ class AnjukeSpider(scrapy.Spider):
     ]
     def start_requests(self):
         index = 1
-        for index in range (1000):
+        for index in range (2):
 
             url = self.start_urls[0] + '/p' + str(index)
-            if url:
-                yield scrapy.Request(url=url, callback=self.parse,errback=self.errback_httpbin,
+            #if url:
+            yield scrapy.Request(url=url, callback=self.parse,errback=self.errback_httpbin,
                                     dont_filter=True)
 
     def parse(self, response):
@@ -30,7 +30,7 @@ class AnjukeSpider(scrapy.Spider):
         item = AnjukeItem()
         houses = response.xpath('//*[@id="houselist-mod-new"]')
         for house in houses:
-            for i in range(60):
+            for i in range(1,50):
                 strr = 'li[' + str(i) + ']'
                 item['houseInfo'] = house.xpath('./{}/div[2]/div[1]/a/text()'.format(strr)).extract()[0].strip()
                 item['rooms'] = house.xpath('./{}/div[2]/div[2]/span[1]/text()'.format(strr)).extract()[0].strip()
