@@ -58,9 +58,6 @@ class AnjukeItem(scrapy.Item):
     level = scrapy.Field()
     rooms = scrapy.Field()
     areas = scrapy.Field()
-    design = scrapy.Field()
-    dirction = scrapy.Field()
-    iselevator = scrapy.Field()
     address = scrapy.Field() # 用于存储地理位置信息
     build_year = scrapy.Field() # 用户存储房子的厅室信息
     optional = scrapy.Field() # 用于存储房子的平米信息
