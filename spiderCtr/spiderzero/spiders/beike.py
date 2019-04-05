@@ -78,7 +78,7 @@ class BeikeSpider(scrapy.Spider):
             item['followInfo'] = house.xpath('./div/div[2]/div[3]/text()').extract()
             item['totalPrice'] = house.xpath('./div/div[2]/div[5]/div[1]/span/text()').extract()[0].strip()
             item['unitPrice'] = house.xpath('./div/div[2]/div[5]/div[2]/span/text()').extract()[0].strip()
-            print(type(item['unitPrice']))
+            #print(type(item['unitPrice']))
             yield item
 
     def errback_httpbin(self, failure):
