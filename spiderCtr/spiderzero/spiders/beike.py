@@ -51,8 +51,9 @@ class BeikeSpider(scrapy.Spider):
             l_url = self.base_url + str(url.extract().strip())
             
             def get_page_num(url):
-                file = urllib.request.urlopen(url)
-                res = file.read()
+                req = urllib.request.Request(url)
+                with urllib.request.urlopen(req) as response:
+                    res = response.read()
                 selector = etree.HTML(res)
                 pagecontent = selector.xpath('//div[@class="page-box house-lst-page-box"]')
                 pages = 0

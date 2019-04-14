@@ -11,19 +11,29 @@ from twisted.internet.error import TimeoutError, TCPTimedOutError
 
 class FangtianxiaSpider(scrapy.Spider):
     name = "Fangtianxia"
+    base_url = "https://nanjing.esf.fang.com/"
     allowed_domains=["nanjing.esf.fang.com"]
     start_urls = [
         "https://nanjing.esf.fang.com/"
     ]
+    
+    
     def start_requests(self):
-        index = 1
-        for index in range(2):
-            url = self.start_urls[0] + '/pg' + str(index)
-            yield scrapy.Request(url=url, callback=self.parse,errback=self.errback_httpbin,
-                                    dont_filter=True)
+        url = self.start_urls[0]
+        yield scrapy.Request(url=url, callback=self.parse_page,errback=self.errback_httpbin,
+                            dont_filter=True)
     
     def parse_page(self,response):
-        pass
+        t_url=[]
+        for i in range(1,12):
+            is_tr = response.xpath('//*[@id="kesfqbfylb_A01_03_01"]/ul/li[{}]/a/@href'.format(str(i))).extract()[0].strip()
+            if is_tr:
+                t_url.append(is_tr)
+                url_tiny = self.base_url + str(t_url[i])
+
+            yield scrapy.Request(url=url_tiny,callback=self.parse,method='GET',
+                                dont_filter=True,errback=self.errback_httpbin)
+
 
 
 
