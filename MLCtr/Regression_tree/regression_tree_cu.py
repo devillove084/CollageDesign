@@ -1,11 +1,11 @@
-from __future__ import print_function
 import numpy as np
 import uuid
 from functools import namedtuple
 
 import pycuda.autoinit
-import pycuda.driver as drv
 import pycuda.gpuarray as gpuarray
+import pycuda.driver as drv
+
 import skcuda.linalg as culinalg
 import skcuda.misc as cumisc
 culinalg.init()
@@ -17,7 +17,8 @@ def load_data(filename):
         for line in f:
             line_data = [float(data) for data in line.split()]
             dataset.append(line_data)
-    return dataset
+    dataset = np.array(dataset)
+    return gpuarray.to_gpu(dataset)
 
 def split_dataset(dataset,feat_idx,value):
     ldata,rdata = [], []
@@ -32,15 +33,13 @@ def split_dataset(dataset,feat_idx,value):
 def fleaf(dataset):
     ''' 计算给定数据的叶节点数值, 这里为均值
     '''
-    dataset = np.array(dataset)
-    dataset_gpu = gpuarray.to_gpu(dataset)
-    return cumisc.mean(dataset_gpu[:,-1]).get()
+    #dataset = np.array(dataset)
+    return cumisc.mean(dataset[:,-1])
 
 def ferr(dataset):
-    dataset = np.array(dataset)
+    #dataset = np.array(dataset)
     m, _ = dataset.shape
-    dataset_gpu = gpuarray.to_gpu(dataset)
-    return cumisc.var(dataset_gpu[:, -1]).get()*dataset.shape[0]
+    return cumisc.var(dataset[:, -1])*dataset.shape[0]
 
 def choose_best_feature(dataset,fleaf,ferr,opt):
     ''' 选取最佳分割特征和特征值
@@ -52,13 +51,12 @@ def choose_best_feature(dataset,fleaf,ferr,opt):
         err_tolerance: 最小误差下降值;
         n_tolerance: 数据切分最小样本数
     '''
-    dataset = np.array(dataset)
-    dataset_gpu = gpuarray.to_gpu(dataset)
+    #dataset = np.array(dataset)
     m,n = dataset.shape
     err_tolerance,n_tolerance = opt['err_tolerance'], opt['n_tolerance']
 
     #遍历所有特征
-    err = ferr(dataset_gpu)
+    err = ferr(dataset)
     best_feat_idx,best_feat_val,best_err = 0,0,float('inf')
     for feat_idx in range(n-1):
         values = dataset[:, feat_idx]

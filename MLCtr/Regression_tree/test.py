@@ -1,4 +1,4 @@
-from regression_tree import *
+from regression_tree_cu import *
 import numpy as np
 import matplotlib.pyplot as plt
 
