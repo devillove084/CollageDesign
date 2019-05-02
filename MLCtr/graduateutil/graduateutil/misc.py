@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cmx
 import matplotlib.colors as colors
 import numpy as np
+import cupy
 
 from .data_operation import calculate_covariance_matrix
 from .data_operation import calculate_correlation_matrix
@@ -24,9 +25,9 @@ class Plot():
         # Sort eigenvalues and eigenvector by largest eigenvalues
         idx = eigenvalues.argsort()[::-1]
         eigenvalues = eigenvalues[idx][:dim]
-        eigenvectors = np.atleast_1d(eigenvectors[:, idx])[:, :dim]
+        eigenvectors = cupy.atleast_1d(eigenvectors[:, idx])[:, :dim]
         # Project the data onto principal components
-        X_transformed = X.dot(eigenvectors)
+        X_transformed = X.dot(eigenvectors.get())
 
         return X_transformed
 
@@ -70,7 +71,7 @@ class Plot():
         x2 = X_transformed[:, 1]
         class_distr = []
 
-        y = np.array(y).astype(int)
+        y = cupy.array(y).astype(int)
 
         colors = [self.cmap(i) for i in np.linspace(0, 1, len(np.unique(y)))]
 
