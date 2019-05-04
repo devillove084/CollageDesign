@@ -2,7 +2,7 @@ from __future__ import division, print_function
 import numpy as np
 import cupy
 
-from graduateutil import divide_on_feature, train_test_split, standardize, mean_squared_error
+from graduateutil import divide_on_feature, train_test_split, standardize, mean_squared_error, judge_type
 from graduateutil import calculate_entropy, accuracy_score, calculate_variance
 
 class DecisionNode():
@@ -65,7 +65,9 @@ class DecisionTree(object):
     
     def fit(self, X, y, loss=None):
         """ Build decicion tree """
-        self.one_dim = len(np.shape(y)) == 1
+        judge_type(X)
+        judge_type(y)
+        self.one_dim = len(y.shape) == 1
         self.root = self._build_tree(X,y)
         self.loss = None
     
@@ -73,15 +75,17 @@ class DecisionTree(object):
         """ Recursive method which builds out the decision tree and splits X and respective y
         on the feature of X which (based on impurity) best separates the data"""
 
+        judge_type(X)
+        judge_type(y)
         largest_impurity = 0
         best_criteria = None    # Feature index and threshold
         best_sets = None        # Subsets of the data
 
-        if len(np.shape(y)) == 1:
+        if len(y.shape) == 1:
             y = cupy.expand_dims(y, axis=1)
 
         Xy = cupy.concatenate((X,y), axis=1)
-        n_samples, n_features = np.shape(X)
+        n_samples, n_features = X.shape
 
         if n_samples >= self.min_samples_split and current_depth <= self.max_depth:
             # Calculate the impurity for each feature
@@ -130,6 +134,7 @@ class DecisionTree(object):
     def predict_value(self, x, tree=None):
         """ Do a recursive search down the tree and make a prediction of the data sample by the
             value of the leaf that we end up at """
+        judge_type(x)
 
         if tree is None:
             tree = self.root
@@ -154,7 +159,9 @@ class DecisionTree(object):
 
     def predict(self, X):
         """ Classify samples one by one and return the set of labels """
+        judge_type(X)
         y_pred = [self.predict_value(sample) for sample in X]
+        y_pred = cupy.asarray(y_pred,dtype=float)
         return y_pred
 
     def print_tree(self, tree=None, indent=" "):
@@ -192,7 +199,7 @@ class XGBoostRegressionTree(DecisionTree):
         return y, y_pred
 
     def _gain(self, y, y_pred):
-        nominator = cupy.power((y * self.loss.gradient(y, y_pred)).sum(), 2)
+        nominator = np.power((y * self.loss.gradient(y, y_pred)).sum(), 2)
         denominator = self.loss.hess(y, y_pred).sum()
         return 0.5 * (nominator / denominator)
 
@@ -211,8 +218,8 @@ class XGBoostRegressionTree(DecisionTree):
         # y split into y, y_pred
         y, y_pred = self._split(y)
         # Newton's Method
-        gradient = cupy.sum(y * self.loss.gradient(y, y_pred), axis=0)
-        hessian = cupy.sum(self.loss.hess(y, y_pred), axis=0)
+        gradient = np.sum(y * self.loss.gradient(y, y_pred), axis=0)
+        hessian = np.sum(self.loss.hess(y, y_pred), axis=0)
         update_approximation =  gradient / hessian
 
         return update_approximation

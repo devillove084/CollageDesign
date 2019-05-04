@@ -2,12 +2,19 @@ from __future__ import division
 import numpy as np
 import math
 import sys
+import cupy
 
+def judge_type(X):
+    if isinstance(X, cupy.ndarray):
+        pass
+    else:
+        X = cupy.asarray(X,dtype=float)
 
 def calculate_entropy(y):
     """ Calculate the entropy of label array y """
-    log2 = lambda x: math.log(x) / math.log(2)
-    unique_labels = np.unique(y)
+    judge_type(y)
+    log2 = lambda x: cupy.log(x) / cupy.log(2)
+    unique_labels = cupy.unique(y)
     entropy = 0
     for label in unique_labels:
         count = len(y[y == label])
@@ -18,37 +25,46 @@ def calculate_entropy(y):
 
 def mean_squared_error(y_true, y_pred):
     """ Returns the mean squared error between y_true and y_pred """
-    mse = np.mean(np.power(y_true - y_pred, 2))
+    judge_type(y_true)
+    judge_type(y_pred)
+    mse = cupy.mean(cupy.power(y_true - y_pred, 2))
     return mse
 
 
 def calculate_variance(X):
     """ Return the variance of the features in dataset X """
-    mean = np.ones(np.shape(X)) * X.mean(0)
-    n_samples = np.shape(X)[0]
-    variance = (1 / n_samples) * np.diag((X - mean).T.dot(X - mean))
+    #X_ = cupy.asarray(X,dtype=float)
+    judge_type(X)
+    mean = cupy.ones(X.shape) * X.mean(0)
+    n_samples = X.shape[0]
+    variance = (1 / n_samples) * cupy.diag((X - mean).T.dot(X - mean))
     
     return variance
 
 
 def calculate_std_dev(X):
     """ Calculate the standard deviations of the features in dataset X """
-    std_dev = np.sqrt(calculate_variance(X))
+    judge_type(X)
+    std_dev = cupy.sqrt(calculate_variance(X))
     return std_dev
 
 
 def euclidean_distance(x1, x2):
     """ Calculates the l2 distance between two vectors """
+    judge_type(x1)
+    judge_type(x2)
     distance = 0
     # Squared distance between each coordinate
-    for i in range(len(x1)):
+    for i in range(x1.__len__):
         distance += pow((x1[i] - x2[i]), 2)
-    return math.sqrt(distance)
+    return cupy.sqrt(distance)
 
 
 def accuracy_score(y_true, y_pred):
     """ Compare y_true to y_pred and return the accuracy """
-    accuracy = np.sum(y_true == y_pred, axis=0) / len(y_true)
+    judge_type(y_true)
+    judge_type(y_pred)
+    accuracy = cupy.sum(y_true == y_pred, axis=0) / y_true.__len__
     return accuracy
 
 
