@@ -71,7 +71,7 @@ class Plot():
         x2 = X_transformed[:, 1]
         class_distr = []
 
-        y = cupy.array(y).astype(int)
+        y = np.array(y).astype(int)
 
         colors = [self.cmap(i) for i in np.linspace(0, 1, len(np.unique(y)))]
 

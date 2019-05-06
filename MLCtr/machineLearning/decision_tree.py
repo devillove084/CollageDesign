@@ -2,7 +2,8 @@ from __future__ import division, print_function
 import numpy as np
 import cupy
 
-from graduateutil import divide_on_feature, train_test_split, standardize, mean_squared_error, judge_type
+
+from graduateutil import divide_on_feature, train_test_split, standardize, mean_squared_error
 from graduateutil import calculate_entropy, accuracy_score, calculate_variance
 
 class DecisionNode():
@@ -65,34 +66,31 @@ class DecisionTree(object):
     
     def fit(self, X, y, loss=None):
         """ Build decicion tree """
-        judge_type(X)
-        judge_type(y)
         self.one_dim = len(y.shape) == 1
         self.root = self._build_tree(X,y)
         self.loss = None
     
+
     def _build_tree(self, X ,y, current_depth=0):
         """ Recursive method which builds out the decision tree and splits X and respective y
         on the feature of X which (based on impurity) best separates the data"""
 
-        judge_type(X)
-        judge_type(y)
         largest_impurity = 0
         best_criteria = None    # Feature index and threshold
         best_sets = None        # Subsets of the data
 
         if len(y.shape) == 1:
-            y = cupy.expand_dims(y, axis=1)
+            y = np.expand_dims(y, axis=1)
 
-        Xy = cupy.concatenate((X,y), axis=1)
+        Xy = np.concatenate((X,y), axis=1)
         n_samples, n_features = X.shape
 
         if n_samples >= self.min_samples_split and current_depth <= self.max_depth:
             # Calculate the impurity for each feature
             for feature_i in range(n_features):
                 # All values of feature_i
-                feature_values = cupy.expand_dims(X[:, feature_i],axis = 1)
-                unique_values = cupy.unique(feature_values)
+                feature_values = np.expand_dims(X[:, feature_i],axis = 1)
+                unique_values = np.unique(feature_values)
 
                 # Iterate through all unique values of feature column i and
                 # calculate the impurity
@@ -134,7 +132,6 @@ class DecisionTree(object):
     def predict_value(self, x, tree=None):
         """ Do a recursive search down the tree and make a prediction of the data sample by the
             value of the leaf that we end up at """
-        judge_type(x)
 
         if tree is None:
             tree = self.root
@@ -159,9 +156,7 @@ class DecisionTree(object):
 
     def predict(self, X):
         """ Classify samples one by one and return the set of labels """
-        judge_type(X)
         y_pred = [self.predict_value(sample) for sample in X]
-        y_pred = cupy.asarray(y_pred,dtype=float)
         return y_pred
 
     def print_tree(self, tree=None, indent=" "):

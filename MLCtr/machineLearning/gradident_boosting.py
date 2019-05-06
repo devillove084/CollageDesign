@@ -3,8 +3,11 @@ import numpy as np
 import progressbar
 import cupy
 
+import sys
+sys.path.append("..")
+sys.path.append(".")
 
-from graduateutil import train_test_split, standardize, to_categorical, judge_type
+from graduateutil import train_test_split, standardize, to_categorical
 from graduateutil import mean_squared_error, accuracy_score
 from graduateutil.loss_functions import SquareLoss, CrossEntropy
 from graduateutil.misc import bar_widgets
@@ -59,40 +62,36 @@ class GradientBoosting(object):
 
 
     def fit(self, X, y):
-        judge_type(X)
-        judge_type(y)
-
-        y_pred = cupy.full(y.shape, cupy.mean(y, axis=0))
-        
-        print(type(y_pred))
+        y_pred = np.full(np.shape(y), np.mean(y, axis=0))
         for i in self.bar(range(self.n_estimators)):
             gradient = self.loss.gradient(y, y_pred)
+
             self.trees[i].fit(X, gradient)
+
             update = self.trees[i].predict(X)
             # Update y prediction
 
-            y_pred -= cupy.multiply(self.learning_rate, update)
+            y_pred -= np.multiply(self.learning_rate, update)
 
 
     def predict(self, X):
-        judge_type(X)
-        y_pred = cupy.array([])
+        y_pred = np.array([])
         # Make predictions
         for tree in self.trees:
             update = tree.predict(X)
-            update = cupy.multiply(self.learning_rate, update)
+            update = np.multiply(self.learning_rate, update)
             y_pred = -update if not y_pred.any() else y_pred - update
-
+        
         if not self.regression:
             # Turn into probability distribution
-            y_pred = cupy.exp(y_pred) / cupy.expand_dims(cupy.sum(cupy.exp(y_pred), axis=1), axis=1)
+            y_pred = np.exp(y_pred) / np.expand_dims(np.sum(np.exp(y_pred), axis=1), axis=1)
             # Set label to the value that maximizes probability
-            y_pred = cupy.argmax(y_pred, axis=1)
+            y_pred = np.argmax(y_pred, axis=1)
         return y_pred
     
 
 class GradientBoostingRegressor(GradientBoosting):
-    def __init__(self, n_estimators=20, learning_rate=0.5, min_samples_split=2,
+    def __init__(self, n_estimators=200, learning_rate=0.5, min_samples_split=2,
                  min_var_red=1e-7, max_depth=4, debug=False):
         super(GradientBoostingRegressor, self).__init__(n_estimators=n_estimators,
             learning_rate=learning_rate,

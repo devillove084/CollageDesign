@@ -9,13 +9,15 @@ import sys
 sys.path.append('.')
 sys.path.append('..')
 
-from graduateutil import train_test_split, standardize, to_categorical,judge_type
+from graduateutil import train_test_split, standardize, to_categorical
 from graduateutil import mean_squared_error, accuracy_score, Plot
 from graduateutil.loss_functions import SquareLoss
 from graduateutil.misc import bar_widgets
+from graduateutil import func_cprofile, func_time, func_line_time
 from machineLearning import GradientBoostingRegressor
 
 
+##@func_cprofile
 def main():
     print ("-- Gradient Boosting Regression --")
 
@@ -27,19 +29,10 @@ def main():
 
     X = time.reshape((-1, 1))               # Time. Fraction of the year [0, 1]
     X = np.insert(X, 0, values=1, axis=1)   # Insert bias term
-    y = temp[:, 0]                         # Temperature. Reduce to one-dim
-
+    y = temp[:, 0]                          # Temperature. Reduce to one-dim
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5)
-    X_train = judge_type(X_train)
-    X_test = judge_type(X_test)
-    y_train = judge_type(y_train)
-    y_test = judge_type(y_test)
-
     model = GradientBoostingRegressor()
-    
     model.fit(X_train, y_train)
-    print('Slow???')
-    
     y_pred = model.predict(X_test)
 
     y_pred_line = model.predict(X)
@@ -52,9 +45,9 @@ def main():
     print ("Mean Squared Error:", mse)
 
     # Plot the results
-    m1 = plt.scatter(366 * X_train[:, 1].get(), y_train.get(), color=cmap(0.9), s=10)
-    m2 = plt.scatter(366 * X_test[:, 1].get(), y_test.get(), color=cmap(0.5), s=10)
-    m3 = plt.scatter(366 * X_test[:, 1].get(), y_pred.get(), color='black', s=10)
+    m1 = plt.scatter(366 * X_train[:, 1], y_train, color=cmap(0.9), s=10)
+    m2 = plt.scatter(366 * X_test[:, 1], y_test, color=cmap(0.5), s=10)
+    m3 = plt.scatter(366 * X_test[:, 1], y_pred, color='black', s=10)
     plt.suptitle("Regression Tree")
     plt.title("MSE: %.2f" % mse, fontsize=10)
     plt.xlabel('Day')
