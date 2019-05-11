@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from ..items import SpiderzeroItem
+from ..items import BeikeItem
 import time
 import json
 import re
@@ -25,7 +25,7 @@ class BeikeSpider(scrapy.Spider):
 
     def start_requests(self):
         url = self.start_urls[0]
-        yield scrapy.Request(url=url,callback=self.lv1_url,method='GET',
+        yield scrapy.Request(url=url,callback=self.parse,method='GET',
                             dont_filter=True,errback=self.errback_httpbin)
 
         #yield scrapy.Request(url=url, callback=self.parse,errback=self.errback_httpbin,
@@ -70,16 +70,27 @@ class BeikeSpider(scrapy.Spider):
 
 
     def parse(self, response):
-        item = SpiderzeroItem()
-        houses = response.xpath('//li[@class="clear"]')
+        item = BeikeItem()
+        houses = response.xpath('//*[@class="info clear"]')
         for house in houses:
-            item['houseInfo'] = house.xpath('./div/div[2]/div[1]/text()').extract()
-            #item['houseInfo'] = re.findall(r'')
-            item['positionInfo'] = house.xpath('./div/div[2]/div[2]/div/text()').extract()
-            item['followInfo'] = house.xpath('./div/div[2]/div[3]/text()').extract()
-            item['totalPrice'] = house.xpath('./div/div[2]/div[5]/div[1]/span/text()').extract()[0].strip()
-            item['unitPrice'] = house.xpath('./div/div[2]/div[5]/div[2]/span/text()').extract()[0].strip()
-            #print(type(item['unitPrice']))
+            item['describe'] = house.xpath('./div[1]/a/text()').extract()
+            item['describe'] = re.findall(r'[\u4e00-\u9fa5]+',str(item['describe']))
+            a = house.xpath('./div[2]/div[2]/text()').extract()
+            hinfo = str(a)
+            #item['houseInfo'] = re.findall(r'[\u4E00-\u9FA5]*$',str(item['houseInfo']))
+            item['level'] = re.findall(r'[低楼层,中楼层,高楼层]+',hinfo)[1]
+            item['build_year'] = re.findall(r'\d年建',hinfo)
+            item['rooms'] = re.findall(r'\d室\d厅',hinfo)
+            item['areas'] = re.findall(r'[0-9]+\.[0-9]+平米',hinfo)
+            item['dirction'] = re.findall(r'[东,西,南,北]',hinfo)
+            item['dirction'] = "".join(re.findall(r"[\u4e00-\u9fa5]+",str(item['dirction'])))
+            item['positionInfo'] = house.xpath('./div[2]/div[1]/div/text()').extract()
+            item['positionInfo'] = re.findall(r"[\u4e00-\u9fa5]+",str(item['positionInfo']))
+            item['followInfo'] = house.xpath('./div[2]/div[3]/text()').extract()
+            item['followInfo'] = re.findall(r'\d+',str(item['followInfo']))
+            item['totalPrice'] = house.xpath('./div[2]/div[5]/div[1]/span/text()').extract()[0].strip()
+            item['unitPrice'] = house.xpath('./div[2]/div[5]/div[2]/span/text()').extract()[0].strip()
+            
             yield item
 
     def errback_httpbin(self, failure):

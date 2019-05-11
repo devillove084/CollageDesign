@@ -113,10 +113,11 @@ class QFangItem(scrapy.Item):
 
 class BeikeItem(scrapy.Item):
     houseInfo = scrapy.Field() # 用于存储房子标题
-    community = scrapy.Field()
+    level = scrapy.Field()
+    build_year = scrapy.Field()
     rooms = scrapy.Field()
     areas = scrapy.Field()
-    design = scrapy.Field()
+    describe = scrapy.Field()
     dirction = scrapy.Field()
     iselevator = scrapy.Field()
     positionInfo = scrapy.Field() # 用于存储地理位置信息

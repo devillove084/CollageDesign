@@ -121,23 +121,24 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 64
 REACTOR_THREADPOOL_MAXSIZE = 60
 
 
-#ITEM_PIPELINES = {
-#    'spiderzero.pipelines.WriteToCsv':300,
-#}
+ITEM_PIPELINES = {
+    'spiderzero.pipelines.WriteToCsv':300,
+}
 
 
-#FEED_EXPORTERS = {                                                        
-#    'csv': 'spiderzro.spiders.csv_item_exporter.MyProjectCsvItemExporter',   
-#}    
+FEED_EXPORTERS = {                                                        
+    'csv': 'spiderzro.spiders.csv_item_exporter.MyProjectCsvItemExporter',   
+}    
                                                                           
-#FIELDS_TO_EXPORT = [                                                                                                                         
-#    'author',                                                             
-#    'title',                                                              
-#    'url',                                                                
-#    'reads',                                                              
-#    'comments',                                                           
-#    'likes',                                                              
-#    'rewards'                                                             
-#] 
+FIELDS_TO_EXPORT = [                                                                                                                         
+    'address',                                                             
+    'areas',                                                              
+    'build_year',                                                                
+    'houseInfo',                                                              
+    'level',                                                           
+    'rooms',                                                              
+    'totalPrice',
+    'unitPrice'                                                             
+] 
 
 
